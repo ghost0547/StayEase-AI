@@ -1,24 +1,27 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <nav className="bg-green-700 text-white p-4">
-        <h1 className="text-2xl font-bold">StayEase AI</h1>
-      </nav>
+    <BrowserRouter>
+      <Navbar />
 
-      <div className="text-center mt-20">
-        <h2 className="text-5xl font-bold text-green-700">
-          Welcome to StayEase AI
-        </h2>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
 
-        <p className="mt-6 text-xl text-gray-600">
-          Smart Homestay & Eco-Tourism Management Platform
-        </p>
-
-        <button className="mt-8 bg-green-700 text-white px-6 py-3 rounded-lg">
-          Explore Homestays
-        </button>
-      </div>
-    </div>
+      <Footer />
+    </BrowserRouter>
   );
 }
 
