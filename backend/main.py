@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from database import homestays_collection
 
 app = FastAPI()
 
@@ -11,61 +12,62 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-homestays = [
-    {
-        "id": 1,
-        "name": "Mountain View Homestay",
-        "location": "Nainital",
-        "price": 1500
-    },
-    {
-        "id": 2,
-        "name": "Lake Side Cottage",
-        "location": "Bhimtal",
-        "price": 2000
-    }
-]
-
 @app.get("/")
 def home():
     return {"message": "StayEase AI Backend Running"}
 
 @app.get("/homestays")
 def get_homestays():
+    homestays = list(homestays_collection.find({}, {"_id": 0}))
     return homestays
 
 @app.get("/homestays/{homestay_id}")
 def get_homestay(homestay_id: int):
-    for h in homestays:
-        if h["id"] == homestay_id:
-            return h
-    raise HTTPException(status_code=404, detail="Homestay not found")
+    homestay = homestays_collection.find_one(
+        {"id": homestay_id},
+        {"_id": 0}
+    )
+
+    if not homestay:
+        raise HTTPException(status_code=404, detail="Homestay not found")
+
+    return homestay
 
 @app.post("/homestays")
 def create_homestay(homestay: dict):
-    homestays.append(homestay)
+    homestays_collection.insert_one(homestay)
     return {"message": "Homestay added"}
 
 @app.put("/homestays/{homestay_id}")
 def update_homestay(homestay_id: int, updated_data: dict):
-    for h in homestays:
-        if h["id"] == homestay_id:
-            h.update(updated_data)
-            return {"message": "Homestay updated"}
-    raise HTTPException(status_code=404, detail="Homestay not found")
+    result = homestays_collection.update_one(
+        {"id": homestay_id},
+        {"$set": updated_data}
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Homestay not found")
+
+    return {"message": "Homestay updated"}
 
 @app.delete("/homestays/{homestay_id}")
 def delete_homestay(homestay_id: int):
-    for h in homestays:
-        if h["id"] == homestay_id:
-            homestays.remove(h)
-            return {"message": "Homestay deleted"}
-    raise HTTPException(status_code=404, detail="Homestay not found")
+    result = homestays_collection.delete_one(
+        {"id": homestay_id}
+    )
+
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Homestay not found")
+
+    return {"message": "Homestay deleted"}
 
 @app.get("/search")
 def search_homestay(name: str):
-    result = [
-        h for h in homestays
-        if name.lower() in h["name"].lower()
-    ]
-    return result
+    homestays = list(
+        homestays_collection.find(
+            {"name": {"$regex": name, "$options": "i"}},
+            {"_id": 0}
+        )
+    )
+
+    return homestays
