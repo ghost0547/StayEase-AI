@@ -6,7 +6,19 @@ from database import users_collection
 import bcrypt
 import jwt
 import os
-from models import UserLogin
+from models import UserLogin,TravelRequest
+import google.generativeai as genai
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+genai.configure(
+    api_key=os.getenv("GEMINI_API_KEY")
+)
+
+
+
 
 
 app = FastAPI()
@@ -172,4 +184,32 @@ def profile(
     return {
         "message": "Protected route accessed",
         "user": user
+    }
+    
+@app.post("/api/ai/itinerary")
+def generate_itinerary(data: TravelRequest):
+
+    model = genai.GenerativeModel(
+    "gemini-2.5-flash"
+)
+
+    prompt = f"""
+    Create a travel itinerary.
+
+    Destination: {data.destination}
+    Days: {data.days}
+    Budget: ₹{data.budget}
+
+    Give:
+    - Day wise plan
+    - Recommended activities
+    - Travel tips
+    """
+
+    response = model.generate_content(
+        prompt
+    )
+
+    return {
+        "itinerary": response.text
     }

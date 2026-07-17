@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 
 import Register from "./pages/Register";
+import AIPlanner from "./pages/AIPlanner";
 
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/showcase" element={<Showcase />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/ai-planner" element={<AIPlanner />} />
       </Routes>
 
       <Footer />
