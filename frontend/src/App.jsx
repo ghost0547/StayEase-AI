@@ -37,20 +37,6 @@ function App() {
     <BrowserRouter>
       <Navbar />
 
-      <div style={{ padding: "10px" }}>
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            marginBottom: "10px",
-            cursor: "pointer",
-          }}
-        >
-          {darkMode ? "☀ Light Mode" : "🌙 Dark Mode"}
-        </button>
-      </div>
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
