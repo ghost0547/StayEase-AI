@@ -1,12 +1,10 @@
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
-from database import homestays_collection
-from models import UserRegister
-from database import users_collection
+from database import homestays_collection, users_collection, favorites_collection
 import bcrypt
 import jwt
 import os
-from models import UserLogin,TravelRequest
+from models import UserLogin,TravelRequest,UserRegister
 import google.generativeai as genai
 
 from dotenv import load_dotenv
@@ -213,3 +211,46 @@ def generate_itinerary(data: TravelRequest):
     return {
         "itinerary": response.text
     }
+
+# Favorites API Endpoints
+@app.post("/api/favorites/{homestay_id}")
+def add_favorite(homestay_id: str, authorization: str = Header(None)):
+    user = verify_token(authorization)
+    email = user["email"]
+    str_id = str(homestay_id)
+
+    existing = favorites_collection.find_one({
+        "user_email": email,
+        "homestay_id": str_id
+    })
+
+    if not existing:
+        favorites_collection.insert_one({
+            "user_email": email,
+            "homestay_id": str_id
+        })
+
+    return {"message": "Favorite added", "homestay_id": str_id}
+
+@app.delete("/api/favorites/{homestay_id}")
+def remove_favorite(homestay_id: str, authorization: str = Header(None)):
+    user = verify_token(authorization)
+    email = user["email"]
+    str_id = str(homestay_id)
+
+    favorites_collection.delete_one({
+        "user_email": email,
+        "homestay_id": str_id
+    })
+
+    return {"message": "Favorite removed", "homestay_id": str_id}
+
+@app.get("/api/favorites")
+def get_favorites(authorization: str = Header(None)):
+    user = verify_token(authorization)
+    email = user["email"]
+
+    user_favs = list(favorites_collection.find({"user_email": email}, {"_id": 0}))
+    fav_ids = [str(fav["homestay_id"]) for fav in user_favs]
+
+    return {"favorites": fav_ids}

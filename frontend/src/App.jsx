@@ -14,6 +14,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import Register from "./pages/Register";
 import AIPlanner from "./pages/AIPlanner";
+import HomestayDetails from "./pages/HomestayDetails";
+import { FavoritesProvider } from "./context/FavoritesContext";
 
 
 function App() {
@@ -34,28 +36,32 @@ function App() {
   }, [darkMode]);
 
   return (
-    <BrowserRouter>
-      <Navbar />
+    <FavoritesProvider>
+      <BrowserRouter>
+        <Navbar />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/showcase" element={<Showcase />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/ai-planner" element={<AIPlanner />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/showcase" element={<Showcase />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/ai-planner" element={<AIPlanner />} />
+          <Route path="/homestay/:id" element={<HomestayDetails />} />
+          <Route path="/homestay" element={<HomestayDetails />} />
+        </Routes>
 
-      <Footer />
-    </BrowserRouter>
+        <Footer />
+      </BrowserRouter>
+    </FavoritesProvider>
   );
 }
 

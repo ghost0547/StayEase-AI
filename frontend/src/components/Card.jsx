@@ -1,20 +1,37 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { HiMapPin, HiStar, HiHeart, HiArrowUpRight } from "react-icons/hi2";
+import { useFavorites } from "../context/FavoritesContext";
 
-function Card({ title, location, price, category, rating, image, description }) {
-  const [isLiked, setIsLiked] = useState(false);
+function Card({ id, title, location, price, category, rating, image, description, homestay }) {
+  const { isFavorite, toggleFavorite, loadingIds } = useFavorites();
 
-  // Gradient placeholder backgrounds for properties if image is not provided
-  const gradientStyles = [
-    "from-emerald-600/90 via-teal-700/90 to-slate-900/95",
-    "from-teal-600/90 via-sky-700/90 to-slate-900/95",
-    "from-emerald-700/90 via-cyan-700/90 to-slate-900/95",
-    "from-sky-600/90 via-emerald-700/90 to-slate-900/95",
+  // Default travel images from Unsplash if image prop is omitted
+  const fallbackImages = [
+    "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+    "https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1200&q=80",
+    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+    "https://images.unsplash.com/photo-1587061949409-02df41d5e562?auto=format&fit=crop&w=1200&q=80",
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
   ];
 
-  // Pick deterministic gradient index based on title length
-  const gradientIndex = (title ? title.length : 0) % gradientStyles.length;
+  const displayImage = image || fallbackImages[(title ? title.length : 0) % fallbackImages.length];
+
+  const homestayData = homestay || {
+    id: id || 1,
+    title,
+    name: title,
+    location,
+    price,
+    category,
+    rating,
+    image: displayImage,
+    description,
+  };
+
+  const cardId = homestayData.id || 1;
+  const isFav = isFavorite(cardId);
+  const isLoading = loadingIds.has(String(cardId));
 
   return (
     <motion.div
@@ -22,22 +39,13 @@ function Card({ title, location, price, category, rating, image, description }) 
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="group relative flex flex-col h-full rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 shadow-lg hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 overflow-hidden"
     >
-      {/* Top Image / Visual Placeholder Area */}
+      {/* Top Image / Visual Area */}
       <div className="relative w-full h-56 overflow-hidden rounded-t-3xl bg-slate-900">
-        {image ? (
-          <img
-            src={image}
-            alt={title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-          />
-        ) : (
-          <div className={`w-full h-full bg-gradient-to-tr ${gradientStyles[gradientIndex]} flex items-center justify-center p-6 group-hover:scale-105 transition-transform duration-500 ease-out relative`}>
-            <div className="absolute inset-0 bg-slate-950/20 backdrop-blur-[1px]" />
-            <span className="relative z-10 text-white font-bold text-lg text-center drop-shadow-md px-4">
-              {title}
-            </span>
-          </div>
-        )}
+        <img
+          src={displayImage}
+          alt={title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+        />
 
         {/* Top Badges Overlay */}
         <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
@@ -55,15 +63,23 @@ function Card({ title, location, price, category, rating, image, description }) 
 
         {/* Favorite Heart Button */}
         <button
-          onClick={() => setIsLiked(!isLiked)}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleFavorite(cardId, title || homestayData.name);
+          }}
+          disabled={isLoading}
           aria-label="Add to favorites"
-          className="absolute bottom-4 right-4 z-10 w-9 h-9 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/60 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 shadow-sm hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer"
+          className="absolute bottom-4 right-4 z-10 w-9 h-9 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/60 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 shadow-sm hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-50"
         >
-          <HiHeart
-            className={`w-5 h-5 transition-colors duration-200 ${
-              isLiked ? "text-rose-500 fill-rose-500" : "text-slate-400 group-hover:text-rose-400"
-            }`}
-          />
+          {isLoading ? (
+            <div className="w-4 h-4 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <HiHeart
+              className={`w-5 h-5 transition-colors duration-200 ${
+                isFav ? "text-rose-500 fill-rose-500" : "text-slate-400 group-hover:text-rose-400"
+              }`}
+            />
+          )}
         </button>
       </div>
 
@@ -98,10 +114,14 @@ function Card({ title, location, price, category, rating, image, description }) 
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium"> / night</span>
           </div>
 
-          <button className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 group-hover:bg-emerald-600 text-white font-semibold text-sm shadow-md group-hover:shadow-emerald-600/30 transition-all duration-300 cursor-pointer">
+          <Link
+            to={`/homestay/${homestayData.id || 1}`}
+            state={{ homestay: homestayData }}
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 group-hover:bg-emerald-600 text-white font-semibold text-sm shadow-md group-hover:shadow-emerald-600/30 transition-all duration-300 cursor-pointer"
+          >
             <span>View Details</span>
             <HiArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
-          </button>
+          </Link>
         </div>
       </div>
     </motion.div>
