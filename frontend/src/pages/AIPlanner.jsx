@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SkeletonAIPlanner } from "../components/ui/Skeleton";
 import AIItineraryViewer from "../components/AIItineraryViewer";
+import { useFavorites } from "../context/FavoritesContext";
 import {
   HiSparkles,
   HiMapPin,
@@ -19,6 +20,8 @@ function AIPlanner() {
   const [itinerary, setItinerary] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { showToast } = useFavorites();
 
   const handleSubmit = async () => {
     if (!destination || !days || !budget) return;
@@ -50,6 +53,32 @@ function AIPlanner() {
       }
 
       setItinerary(data.itinerary);
+
+      // Automatically save itinerary to MongoDB for authenticated users
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const saveRes = await fetch("http://127.0.0.1:8000/api/itineraries", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              destination,
+              days: Number(days),
+              budget: Number(budget),
+              itinerary: data.itinerary,
+            }),
+          });
+
+          if (saveRes.ok) {
+            showToast("Itinerary saved successfully.", "success");
+          }
+        } catch (saveErr) {
+          console.error("Auto-save itinerary error:", saveErr);
+        }
+      }
     } catch (err) {
       setError(err.message || "Failed to generate itinerary. Please try again.");
       console.error(err);

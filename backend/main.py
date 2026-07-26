@@ -1,10 +1,12 @@
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
-from database import homestays_collection, users_collection, favorites_collection
+from database import homestays_collection, users_collection, favorites_collection, itineraries_collection
 import bcrypt
 import jwt
 import os
-from models import UserLogin,TravelRequest,UserRegister
+from datetime import datetime
+from bson import ObjectId
+from models import UserLogin, TravelRequest, UserRegister, ItinerarySaveRequest
 import google.generativeai as genai
 
 from dotenv import load_dotenv
@@ -15,21 +17,16 @@ genai.configure(
     api_key=os.getenv("GEMINI_API_KEY")
 )
 
-
-
-
-
 app = FastAPI()
 
 def verify_token(authorization):
-
     if not authorization:
         raise HTTPException(
             status_code=401,
             detail="Token missing"
         )
 
-    token = authorization.split(" ")[1]
+    token = authorization.split(" ")[1] if " " in authorization else authorization
 
     try:
         payload = jwt.decode(
@@ -37,13 +34,11 @@ def verify_token(authorization):
             os.getenv("JWT_SECRET"),
             algorithms=["HS256"]
         )
-
         return payload
-
     except Exception:
         raise HTTPException(
-        status_code=401,
-        detail="Invalid token"
+            status_code=401,
+            detail="Invalid token"
         )
 
 app.add_middleware(
@@ -188,8 +183,8 @@ def profile(
 def generate_itinerary(data: TravelRequest):
 
     model = genai.GenerativeModel(
-    "gemini-2.5-flash"
-)
+        "gemini-2.5-flash"
+    )
 
     prompt = f"""
     Create a travel itinerary.
@@ -254,3 +249,70 @@ def get_favorites(authorization: str = Header(None)):
     fav_ids = [str(fav["homestay_id"]) for fav in user_favs]
 
     return {"favorites": fav_ids}
+
+# Itineraries API Endpoints (Save AI Itineraries)
+@app.post("/api/itineraries")
+def save_itinerary(data: ItinerarySaveRequest, authorization: str = Header(None)):
+    user = verify_token(authorization)
+    user_id = user["email"]
+
+    doc = {
+        "user_id": user_id,
+        "user_email": user_id,
+        "destination": data.destination,
+        "days": data.days,
+        "budget": data.budget,
+        "itinerary": data.itinerary,
+        "created_at": datetime.utcnow().isoformat()
+    }
+
+    result = itineraries_collection.insert_one(doc)
+    doc["id"] = str(result.inserted_id)
+    if "_id" in doc:
+        del doc["_id"]
+
+    return {"message": "Itinerary saved successfully", "itinerary": doc}
+
+@app.get("/api/itineraries")
+def get_itineraries(authorization: str = Header(None)):
+    user = verify_token(authorization)
+    user_id = user["email"]
+
+    docs = list(itineraries_collection.find({"user_email": user_id}))
+    result = []
+    for d in docs:
+        d["id"] = str(d["_id"])
+        del d["_id"]
+        result.append(d)
+
+    result.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+    return {"itineraries": result}
+
+@app.delete("/api/itineraries/{itinerary_id}")
+def delete_itinerary(itinerary_id: str, authorization: str = Header(None)):
+    user = verify_token(authorization)
+    user_id = user["email"]
+
+    deleted = False
+    try:
+        res = itineraries_collection.delete_one({
+            "user_email": user_id,
+            "_id": ObjectId(itinerary_id)
+        })
+        if res.deleted_count > 0:
+            deleted = True
+    except Exception:
+        pass
+
+    if not deleted:
+        res = itineraries_collection.delete_one({
+            "user_email": user_id,
+            "id": itinerary_id
+        })
+        if res.deleted_count > 0:
+            deleted = True
+
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Itinerary not found")
+
+    return {"message": "Itinerary deleted successfully", "id": itinerary_id}
