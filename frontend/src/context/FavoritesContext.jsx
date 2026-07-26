@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const FavoritesContext = createContext();
 
@@ -130,21 +131,29 @@ export function FavoritesProvider({ children }) {
     >
       {children}
 
-      {/* Floating Toast Notification */}
-      {toast && (
-        <div className="fixed bottom-6 right-6 z-50 animate-bounce">
-          <div
-            className={`px-5 py-3 rounded-2xl shadow-2xl backdrop-blur-xl border text-sm font-bold flex items-center gap-2.5 transition-all ${
-              toast.type === "error"
-                ? "bg-rose-500/90 border-rose-400 text-white shadow-rose-500/30"
-                : "bg-slate-900/90 dark:bg-emerald-950/90 border-emerald-500/40 text-emerald-300 shadow-emerald-500/20"
-            }`}
+      {/* Floating Toast Notification with Framer Motion */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            className="fixed bottom-6 right-6 z-50 pointer-events-none"
           >
-            <span>{toast.type === "error" ? "⚠️" : "❤️"}</span>
-            <span>{toast.message}</span>
-          </div>
-        </div>
-      )}
+            <div
+              className={`px-5 py-3 rounded-2xl shadow-2xl backdrop-blur-xl border text-xs sm:text-sm font-bold flex items-center gap-2.5 ${
+                toast.type === "error"
+                  ? "bg-rose-500/90 border-rose-400 text-white shadow-rose-500/30"
+                  : "bg-slate-900/90 dark:bg-emerald-950/90 border-emerald-500/40 text-emerald-300 shadow-emerald-500/20"
+              }`}
+            >
+              <span>{toast.type === "error" ? "⚠️" : "❤️"}</span>
+              <span>{toast.message}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </FavoritesContext.Provider>
   );
 }

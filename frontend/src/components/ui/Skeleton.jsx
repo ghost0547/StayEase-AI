@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 // Base Skeleton element with cyan shimmer animation and accessibility
 export function Skeleton({ className = "", ...props }) {
   return (

@@ -9,6 +9,7 @@ import {
   HiCurrencyRupee,
   HiArrowRight,
   HiExclamationTriangle,
+  HiArrowPath,
 } from "react-icons/hi2";
 
 function AIPlanner() {
@@ -20,6 +21,8 @@ function AIPlanner() {
   const [error, setError] = useState("");
 
   const handleSubmit = async () => {
+    if (!destination || !days || !budget) return;
+
     setLoading(true);
     setError("");
     setItinerary("");
@@ -43,15 +46,21 @@ function AIPlanner() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error("Failed to generate itinerary");
+        throw new Error(data.detail || "Failed to generate itinerary");
       }
 
       setItinerary(data.itinerary);
     } catch (err) {
-      setError("Failed to generate itinerary");
+      setError(err.message || "Failed to generate itinerary. Please try again.");
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && destination && days && budget && !loading) {
+      handleSubmit();
     }
   };
 
@@ -93,7 +102,7 @@ function AIPlanner() {
         {/* 1. Hero Header */}
         <div className="flex flex-col items-center text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 text-xs sm:text-sm font-semibold">
-            <HiSparkles className="w-4 h-4 text-emerald-600" />
+            <HiSparkles className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>✨ AI Travel Planner</span>
           </div>
 
@@ -111,22 +120,24 @@ function AIPlanner() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 p-8 sm:p-10 shadow-2xl shadow-slate-900/10 dark:shadow-slate-950/80 space-y-6"
+          className="rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 p-6 sm:p-10 shadow-2xl shadow-slate-900/10 dark:shadow-slate-950/80 space-y-6"
         >
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             
             {/* Input 1: Destination */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300 tracking-wide uppercase flex items-center gap-1.5">
-                <HiMapPin className="w-4 h-4 text-emerald-500" />
+              <label htmlFor="destination-input" className="text-xs font-bold text-slate-700 dark:text-slate-300 tracking-wide uppercase flex items-center gap-1.5">
+                <HiMapPin className="w-4 h-4 text-emerald-500 shrink-0" />
                 <span>Destination</span>
               </label>
               <div className="relative">
                 <input
+                  id="destination-input"
                   type="text"
                   placeholder="e.g. Bali, Indonesia"
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
+                  onKeyDown={handleKeyDown}
                   aria-label="Destination location"
                   className="w-full px-4 py-3.5 rounded-xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all duration-200"
                 />
@@ -135,16 +146,20 @@ function AIPlanner() {
 
             {/* Input 2: Days */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300 tracking-wide uppercase flex items-center gap-1.5">
-                <HiCalendar className="w-4 h-4 text-teal-500" />
+              <label htmlFor="days-input" className="text-xs font-bold text-slate-700 dark:text-slate-300 tracking-wide uppercase flex items-center gap-1.5">
+                <HiCalendar className="w-4 h-4 text-teal-500 shrink-0" />
                 <span>Number of Days</span>
               </label>
               <div className="relative">
                 <input
+                  id="days-input"
                   type="number"
+                  min="1"
+                  max="30"
                   placeholder="e.g. 5"
                   value={days}
                   onChange={(e) => setDays(e.target.value)}
+                  onKeyDown={handleKeyDown}
                   aria-label="Number of trip days"
                   className="w-full px-4 py-3.5 rounded-xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all duration-200"
                 />
@@ -153,16 +168,19 @@ function AIPlanner() {
 
             {/* Input 3: Budget */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300 tracking-wide uppercase flex items-center gap-1.5">
-                <HiCurrencyRupee className="w-4 h-4 text-sky-500" />
+              <label htmlFor="budget-input" className="text-xs font-bold text-slate-700 dark:text-slate-300 tracking-wide uppercase flex items-center gap-1.5">
+                <HiCurrencyRupee className="w-4 h-4 text-sky-500 shrink-0" />
                 <span>Budget (₹)</span>
               </label>
               <div className="relative">
                 <input
+                  id="budget-input"
                   type="number"
+                  min="1000"
                   placeholder="e.g. 25000"
                   value={budget}
                   onChange={(e) => setBudget(e.target.value)}
+                  onKeyDown={handleKeyDown}
                   aria-label="Total trip budget in Rupees"
                   className="w-full px-4 py-3.5 rounded-xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all duration-200"
                 />
@@ -178,25 +196,35 @@ function AIPlanner() {
             onClick={handleSubmit}
             disabled={loading || !destination || !days || !budget}
             aria-label="Generate AI Itinerary"
-            className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-base shadow-lg shadow-emerald-600/25 disabled:opacity-60 transition-all duration-200 cursor-pointer"
+            className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-base shadow-lg shadow-emerald-600/25 disabled:opacity-60 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
           >
-            <HiSparkles className="w-5 h-5" />
+            <HiSparkles className="w-5 h-5 shrink-0" />
             <span>{loading ? "Generating your AI itinerary..." : "Generate Itinerary"}</span>
-            {!loading && <HiArrowRight className="w-5 h-5" />}
+            {!loading && <HiArrowRight className="w-5 h-5 shrink-0" />}
           </motion.button>
         </motion.div>
 
-        {/* 3. Error Card */}
+        {/* 3. Error Card with Retry Button */}
         <AnimatePresence>
           {error && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              className="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center gap-3 font-medium text-sm shadow-sm"
+              className="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center justify-between gap-3 font-medium text-sm shadow-sm"
             >
-              <HiExclamationTriangle className="w-6 h-6 shrink-0 text-rose-500" />
-              <span>{error}</span>
+              <div className="flex items-center gap-3">
+                <HiExclamationTriangle className="w-6 h-6 shrink-0 text-rose-500" />
+                <span>{error}</span>
+              </div>
+              <button
+                onClick={handleSubmit}
+                aria-label="Retry generating itinerary"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold text-xs transition-colors shrink-0 cursor-pointer"
+              >
+                <HiArrowPath className="w-4 h-4" />
+                <span>Retry</span>
+              </button>
             </motion.div>
           )}
         </AnimatePresence>

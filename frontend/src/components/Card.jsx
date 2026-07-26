@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { HiMapPin, HiStar, HiHeart, HiArrowUpRight } from "react-icons/hi2";
@@ -35,7 +36,7 @@ function Card({ id, title, location, price, category, rating, image, description
 
   return (
     <motion.div
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="group relative flex flex-col h-full rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 shadow-lg hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 overflow-hidden"
     >
@@ -43,7 +44,9 @@ function Card({ id, title, location, price, category, rating, image, description
       <div className="relative w-full h-56 overflow-hidden rounded-t-3xl bg-slate-900">
         <img
           src={displayImage}
-          alt={title}
+          alt={title || "Homestay image"}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
         />
 
@@ -128,4 +131,4 @@ function Card({ id, title, location, price, category, rating, image, description
   );
 }
 
-export default Card;
+export default memo(Card);

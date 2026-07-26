@@ -1,25 +1,34 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import Showcase from "./pages/Showcase";
 import ProtectedRoute from "./components/ProtectedRoute";
-
-
-import Register from "./pages/Register";
-import AIPlanner from "./pages/AIPlanner";
-import HomestayDetails from "./pages/HomestayDetails";
 import { FavoritesProvider } from "./context/FavoritesContext";
+import { SkeletonHero } from "./components/ui/Skeleton";
 
+// Code-split pages for production bundle optimization
+const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Login = lazy(() => import("./pages/Login"));
+const Showcase = lazy(() => import("./pages/Showcase"));
+const Register = lazy(() => import("./pages/Register"));
+const AIPlanner = lazy(() => import("./pages/AIPlanner"));
+const HomestayDetails = lazy(() => import("./pages/HomestayDetails"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4">
+      <SkeletonHero />
+    </div>
+  );
+}
 
 function App() {
-  const [darkMode, setDarkMode] = useState(
+  const [darkMode] = useState(
     localStorage.getItem("theme") === "dark",
   );
 
@@ -40,24 +49,36 @@ function App() {
       <BrowserRouter>
         <Navbar />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/showcase" element={<Showcase />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/ai-planner" element={<AIPlanner />} />
-          <Route path="/homestay/:id" element={<HomestayDetails />} />
-          <Route path="/homestay" element={<HomestayDetails />} />
-        </Routes>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/showcase" element={<Showcase />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/ai-planner" element={<AIPlanner />} />
+            <Route path="/homestay/:id" element={<HomestayDetails />} />
+            <Route path="/homestay" element={<HomestayDetails />} />
+            {/* Catch-all 404 Route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
 
         <Footer />
       </BrowserRouter>

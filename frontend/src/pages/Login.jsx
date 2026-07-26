@@ -36,6 +36,7 @@ function Login() {
 
       if (response.ok) {
         localStorage.setItem("token", data.access_token);
+        window.dispatchEvent(new Event("auth-change"));
         alert("Login Successful");
         navigate("/dashboard");
       } else {
@@ -159,6 +160,7 @@ function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    aria-label="Email Address"
                     className="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all duration-200"
                   />
                 </div>
@@ -188,6 +190,7 @@ function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    aria-label="Password"
                     className="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all duration-200"
                   />
                 </div>
@@ -199,7 +202,8 @@ function Login() {
                 disabled={isLoading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full mt-2 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-base shadow-lg shadow-emerald-600/25 active:shadow-none transition-all duration-200 cursor-pointer disabled:opacity-70"
+                aria-label="Sign in button"
+                className="w-full mt-2 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-base shadow-lg shadow-emerald-600/25 active:shadow-none transition-all duration-200 cursor-pointer disabled:opacity-70 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
               >
                 <span>{isLoading ? "Signing In..." : "Sign In"}</span>
                 {!isLoading && <HiArrowRight className="w-4 h-4" />}
@@ -221,6 +225,7 @@ function Login() {
               Don't have an account?{" "}
               <Link
                 to="/register"
+                aria-label="Go to registration page"
                 className="font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 transition-colors"
               >
                 Register
