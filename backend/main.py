@@ -41,9 +41,22 @@ def verify_token(authorization):
             detail="Invalid token"
         )
 
+# CORS Configuration for local development & production deployment
+allowed_origins_raw = os.getenv("ALLOWED_ORIGINS", "")
+if allowed_origins_raw:
+    origins = [origin.strip() for origin in allowed_origins_raw.split(",") if origin.strip()]
+else:
+    origins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "*"
+    ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -316,3 +329,8 @@ def delete_itinerary(itinerary_id: str, authorization: str = Header(None)):
         raise HTTPException(status_code=404, detail="Itinerary not found")
 
     return {"message": "Itinerary deleted successfully", "id": itinerary_id}
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)

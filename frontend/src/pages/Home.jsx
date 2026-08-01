@@ -5,6 +5,7 @@ import Card from "../components/Card";
 import SearchFilterBar from "../components/SearchFilterBar";
 import { SkeletonCard } from "../components/ui/Skeleton";
 import { HiSparkles, HiMagnifyingGlass } from "react-icons/hi2";
+import API_URL from "../config/api";
 
 function Home() {
   const [homestays, setHomestays] = useState([]);
@@ -86,7 +87,7 @@ function Home() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://127.0.0.1:8000/homestays")
+    fetch(`${API_URL}/homestays`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {

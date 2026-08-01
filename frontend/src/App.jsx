@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect, lazy, Suspense } from "react";
+import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -46,6 +47,57 @@ function App() {
 
   return (
     <FavoritesProvider>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        gutter={10}
+        containerStyle={{
+          top: 24,
+          right: 24,
+          zIndex: 99999,
+        }}
+        toastOptions={{
+          duration: 3500,
+          style: {
+            background: "rgba(15, 23, 42, 0.88)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            color: "#f8fafc",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
+            borderRadius: "1rem",
+            boxShadow:
+              "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3)",
+            fontSize: "0.875rem",
+            fontWeight: "500",
+            padding: "12px 16px",
+            maxWidth: "380px",
+          },
+          success: {
+            duration: 3500,
+            iconTheme: {
+              primary: "#10b981",
+              secondary: "#0f172a",
+            },
+            style: {
+              border: "1px solid rgba(16, 185, 129, 0.35)",
+              boxShadow:
+                "0 10px 25px -5px rgba(16, 185, 129, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.4)",
+            },
+          },
+          error: {
+            duration: 4000,
+            iconTheme: {
+              primary: "#f43f5e",
+              secondary: "#0f172a",
+            },
+            style: {
+              border: "1px solid rgba(244, 63, 94, 0.35)",
+              boxShadow:
+                "0 10px 25px -5px rgba(244, 63, 94, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.4)",
+            },
+          },
+        }}
+      />
       <BrowserRouter>
         <Navbar />
 

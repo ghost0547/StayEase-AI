@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import API_URL from "../config/api";
 import {
   User,
   UserCircle,
@@ -46,7 +47,7 @@ function Profile() {
 
     const token = localStorage.getItem("token");
     if (token) {
-      fetch("http://127.0.0.1:8000/api/profile", {
+      fetch(`${API_URL}/api/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

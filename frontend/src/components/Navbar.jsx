@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiSparkles, HiBars3, HiXMark, HiArrowRightOnRectangle } from "react-icons/hi2";
 
+import { notifySuccess } from "../utils/toast";
+
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem("token"));
@@ -31,6 +33,7 @@ function Navbar() {
     localStorage.removeItem("favorites_cache");
     window.dispatchEvent(new Event("auth-change"));
     setIsAuthenticated(false);
+    notifySuccess("Logged out successfully");
     navigate("/");
   };
 

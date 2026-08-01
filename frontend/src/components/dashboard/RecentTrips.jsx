@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import AIItineraryViewer from "../AIItineraryViewer";
 import { useFavorites } from "../../context/FavoritesContext";
+import API_URL from "../../config/api";
 
 function RecentTrips() {
   const [itineraries, setItineraries] = useState([]);
@@ -30,7 +31,7 @@ function RecentTrips() {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/itineraries", {
+      const response = await fetch(`${API_URL}/api/itineraries`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -62,7 +63,7 @@ function RecentTrips() {
     setDeletingId(id);
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/itineraries/${id}`, {
+      const response = await fetch(`${API_URL}/api/itineraries/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -71,7 +72,7 @@ function RecentTrips() {
 
       if (response.ok) {
         setItineraries((prev) => prev.filter((item) => item.id !== id));
-        showToast(`Itinerary for "${destination}" deleted`, "success");
+        showToast("Itinerary deleted", "success");
       } else {
         showToast("Failed to delete itinerary", "error");
       }

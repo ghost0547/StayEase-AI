@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import API_URL from "../config/api";
 import {
   HiSparkles,
   HiEnvelope,
@@ -8,6 +9,8 @@ import {
   HiArrowRight,
   HiCheckCircle,
 } from "react-icons/hi2";
+
+import { notifySuccess, notifyError } from "../utils/toast";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -22,7 +25,7 @@ function Register() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/auth/register",
+        `${API_URL}/api/auth/register`,
         {
           method: "POST",
           headers: {
@@ -38,14 +41,14 @@ function Register() {
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.message);
+        notifySuccess("Account created successfully!", "You can now sign in.");
         navigate("/login");
       } else {
-        alert(data.detail || data.message || "Registration failed");
+        notifyError("Registration failed", data.detail || data.message || "Please try again with a different email.");
       }
     } catch (error) {
       console.error(error);
-      alert("Server Error");
+      notifyError("Server Error", "Please try again later.");
     } finally {
       setIsLoading(false);
     }

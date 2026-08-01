@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SkeletonAIPlanner } from "../components/ui/Skeleton";
 import AIItineraryViewer from "../components/AIItineraryViewer";
 import { useFavorites } from "../context/FavoritesContext";
+import API_URL from "../config/api";
 import {
   HiSparkles,
   HiMapPin,
@@ -13,6 +14,8 @@ import {
   HiArrowPath,
 } from "react-icons/hi2";
 
+import { notifySuccess, notifyError } from "../utils/toast";
+
 function AIPlanner() {
   const [destination, setDestination] = useState("");
   const [days, setDays] = useState("");
@@ -20,8 +23,6 @@ function AIPlanner() {
   const [itinerary, setItinerary] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const { showToast } = useFavorites();
 
   const handleSubmit = async () => {
     if (!destination || !days || !budget) return;
@@ -32,7 +33,7 @@ function AIPlanner() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/ai/itinerary",
+        `${API_URL}/api/ai/itinerary`,
         {
           method: "POST",
           headers: {
@@ -49,16 +50,17 @@ function AIPlanner() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.detail || "Failed to generate itinerary");
+        throw new Error(data.detail || "Unable to generate itinerary");
       }
 
       setItinerary(data.itinerary);
+      notifySuccess("Itinerary generated successfully");
 
       // Automatically save itinerary to MongoDB for authenticated users
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const saveRes = await fetch("http://127.0.0.1:8000/api/itineraries", {
+          const saveRes = await fetch(`${API_URL}/api/itineraries`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -73,14 +75,16 @@ function AIPlanner() {
           });
 
           if (saveRes.ok) {
-            showToast("Itinerary saved successfully.", "success");
+            notifySuccess("Itinerary saved successfully");
           }
         } catch (saveErr) {
           console.error("Auto-save itinerary error:", saveErr);
         }
       }
     } catch (err) {
-      setError(err.message || "Failed to generate itinerary. Please try again.");
+      const errorMsg = err.message || "Unable to generate itinerary";
+      setError(errorMsg);
+      notifyError("Unable to generate itinerary", errorMsg);
       console.error(err);
     } finally {
       setLoading(false);

@@ -12,6 +12,7 @@ import {
 
 import { useFavorites } from "../context/FavoritesContext";
 import { SkeletonDetail } from "../components/ui/Skeleton";
+import API_URL from "../config/api";
 
 import HeroGallery from "../components/homestay/HeroGallery";
 import StickyBookingCard from "../components/homestay/StickyBookingCard";
@@ -43,7 +44,7 @@ function HomestayDetails() {
     let isMounted = true;
     const homestayId = paramId || "1";
 
-    fetch(`http://127.0.0.1:8000/homestays/${homestayId}`)
+    fetch(`${API_URL}/homestays/${homestayId}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();

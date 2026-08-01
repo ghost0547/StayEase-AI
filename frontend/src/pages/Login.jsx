@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import API_URL from "../config/api";
 import {
   HiSparkles,
   HiEnvelope,
@@ -8,6 +9,8 @@ import {
   HiArrowRight,
   HiCheckCircle,
 } from "react-icons/hi2";
+
+import { notifySuccess, notifyError, notifyWarning } from "../utils/toast";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -21,7 +24,7 @@ function Login() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/auth/login", {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,14 +40,14 @@ function Login() {
       if (response.ok) {
         localStorage.setItem("token", data.access_token);
         window.dispatchEvent(new Event("auth-change"));
-        alert("Login Successful");
+        notifySuccess("Welcome back!", "Login successful.");
         navigate("/dashboard");
       } else {
-        alert(data.detail || "Invalid login credentials");
+        notifyError(data.detail || "Invalid email or password");
       }
     } catch (error) {
       console.error(error);
-      alert("Server Error");
+      notifyError("Server Error", "Please try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -174,7 +177,7 @@ function Login() {
                   </label>
                   <button
                     type="button"
-                    onClick={() => alert("Password reset feature coming soon.")}
+                    onClick={() => notifyWarning("Password Reset", "Password reset feature coming soon.")}
                     className="text-xs font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 transition-colors cursor-pointer"
                   >
                     Forgot password?

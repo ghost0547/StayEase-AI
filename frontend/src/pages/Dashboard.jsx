@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFavorites } from "../context/FavoritesContext";
 import { SkeletonDashboard } from "../components/ui/Skeleton";
+import API_URL from "../config/api";
 
 import HeroGreeting from "../components/dashboard/HeroGreeting";
 import TravelStats from "../components/dashboard/TravelStats";
@@ -12,6 +13,8 @@ import FavoritesSection from "../components/dashboard/FavoritesSection";
 import ActivityTimeline from "../components/dashboard/ActivityTimeline";
 import AchievementBadges from "../components/dashboard/AchievementBadges";
 import RecommendedDestinations from "../components/dashboard/RecommendedDestinations";
+
+import { notifySuccess } from "../utils/toast";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
@@ -96,6 +99,7 @@ function Dashboard() {
     localStorage.removeItem("token");
     localStorage.removeItem("favorites_cache");
     window.dispatchEvent(new Event("auth-change"));
+    notifySuccess("Logged out successfully");
     navigate("/");
   };
 
@@ -112,7 +116,7 @@ function Dashboard() {
       }
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/profile", {
+        const response = await fetch(`${API_URL}/api/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
