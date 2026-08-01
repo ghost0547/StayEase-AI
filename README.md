@@ -1,221 +1,313 @@
-# 🏡 StayEase AI — Next-Gen AI Homestay & Travel Workspace
+# 🏡 StayEase AI
 
-![License](https://img.shields.io/badge/license-MIT-emerald.svg)
-![React](https://img.shields.io/badge/React-18.3-blue.svg?logo=react)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-teal.svg?logo=fastapi)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green.svg?logo=mongodb)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-06B6D4.svg?logo=tailwindcss)
-![Gemini AI](https://img.shields.io/badge/Google_Gemini-1.5_Flash-8E44AD.svg?logo=google)
-![JWT](https://img.shields.io/badge/JWT-Protected-black.svg?logo=jsonwebtokens)
+StayEase AI is a full-stack web application that combines homestay discovery with AI-powered personalized travel planning, delivering customized travel itineraries and curated accommodations.
 
-> An intelligent, full-stack AI-powered homestay discovery and travel itinerary planning platform designed to deliver personalized travel experiences in seconds.
-
----
-
-## 🌟 Overview
-
-**StayEase AI** bridges the gap between authentic local homestay discovery and effortless travel planning. Leveraging **Google's Gemini 1.5 Flash AI**, StayEase AI generates day-by-day travel itineraries customized to user preferences, travel duration, and budget while recommending verified, premium homestays.
-
-Built with a high-performance **FastAPI** backend, **MongoDB** document database, and a responsive **React (Vite)** frontend, StayEase AI offers a seamless travel workspace complete with user authentication, personalized statistics, interactive galleries, and a token-backed favorites management system.
+![React](https://img.shields.io/badge/React-19.2.6-61DAFB?style=flat&logo=react&logoColor=black)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688?style=flat&logo=fastapi&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat&logo=mongodb&logoColor=white)
+![Gemini AI](https://img.shields.io/badge/Google_Gemini-2.5_Flash-8E44AD?style=flat&logo=google&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-Deployment-000000?style=flat&logo=vercel&logoColor=white)
+![Render](https://img.shields.io/badge/Render-Deployment-46E3B7?style=flat&logo=render&logoColor=black)
 
 ---
 
-## ✨ Features
+## 🌐 Live Demo
 
-### 🏡 Modern Homestay Experience
-- **Hero Image Gallery**: Interactive desktop photo mosaic (1 hero + 4 previews) with fullscreen lightbox modal and touch-swipeable mobile slider.
-- **Sticky Booking Card**: Desktop-sticky booking card with dynamic night & price calculations, guest counters, date range pickers, and reservation request modals.
-- **Property Highlights & Amenities**: Feature chips with Lucide icons (WiFi, Mountain View, Breakfast, Swimming Pool, Workspace) and category-grouped amenity grids.
-- **Nearby Attractions & Guest Reviews**: Curated landmark distance cards with travel time estimates and verified guest review ratings.
+- **Live Application:** [https://stay-ease-ai.vercel.app](https://stay-ease-ai.vercel.app)
+- **Backend API:** [https://stayease-ai-backend.onrender.com](https://stayease-ai-backend.onrender.com)
+- **API Documentation:** [https://stayease-ai-backend.onrender.com/docs](https://stayease-ai-backend.onrender.com/docs)
 
-### 🤖 AI Travel Itinerary Planner
-- **Instant Itinerary Synthesis**: Generates day-by-day travel plans powered by Google Gemini AI tailored to destination, budget, and trip length.
-- **Rich Dashboard Viewer**: Custom day cards, morning/afternoon/evening activity breakdown, budget allocation cards, and copy/export options.
-- **Fallback Recovery**: Graceful retry mechanisms and structured JSON output rendering.
-
-### 👤 Personalized Travel Workspace (Dashboard)
-- **Time-Based Welcome**: Dynamic greetings (`Good Morning` / `Good Afternoon` / `Good Evening`) with ambient glow effects.
-- **Animated Travel Statistics**: Interactive stat cards with animated count-up counters (Saved Homestays, AI Trips, Favorite Destination, Explored Stays).
-- **Favorites Management**: Token-authenticated favorites system with real-time API sync and Framer Motion exit layout animations.
-- **Collectible Badges & Timeline**: Achievement progress bars and vertical activity timeline tracing user interactions.
+> ℹ️ **Note:** The backend is deployed on Render's free tier. If the service has been idle, the initial API request may experience a short cold-start delay (20–40 seconds) while the instance spins up.
 
 ---
 
-## 📸 Screenshots & Live Demo
+## 📋 Project Overview
 
-### 🎥 Live Demo Placeholder
-> 📽️ **[Watch Full Video Demo](#)** *(Add video demo or hosted URL link here)*
+Modern travelers often struggle to coordinate accommodation search with day-by-day travel planning. StayEase AI unifies homestay discovery and travel itinerary generation into a single workspace.
 
-### 🖼️ Platform Preview
-| 🏡 Homestay Details & Hero Gallery | 🤖 AI Travel Planner |
-|:---:|:---:|
-| *(Add Screenshot: Homestay Details Page)* | *(Add Screenshot: AI Itinerary Output)* |
-
-| 📊 Personalized Dashboard | 📱 Mobile Responsive Layout |
-|:---:|:---:|
-| *(Add Screenshot: User Travel Workspace)* | *(Add Screenshot: Mobile 320px Viewport)* |
+### Core Capabilities
+- **Explore & Filter Homestays:** Browse curated stays by category (Nature & Eco Villa, Mountain Retreat, Beachfront Villa, Luxury Plantation, Heritage Palace, Hilltop Sanctuary), search by name, or filter by price range and location.
+- **Detailed Property Pages:** View interactive photo mosaic galleries, detailed descriptions, category-grouped amenities, nearby landmarks with travel time estimates, verified guest reviews, sticky pricing cards, and similar property recommendations.
+- **AI-Powered Itinerary Generation:** Input destination, duration (days), and budget (INR) to generate personalized day-by-day itineraries using Google Gemini AI.
+- **Guest vs. Authenticated Behavior:**
+  - **Guests:** Can freely browse homestays, filter properties, view details, and generate AI travel itineraries without logging in.
+  - **Authenticated Users:** Can save favorite homestays to their MongoDB profile, persist generated AI itineraries, view saved trips in their personal workspace, and delete unwanted itineraries.
 
 ---
 
-## 🛠️ Tech Stack
+## ✨ Key Features
 
-### **Frontend**
-- **Framework**: React 18 (Vite)
-- **Styling**: Tailwind CSS v4, Vanilla CSS
-- **Animations**: Framer Motion
-- **Icons**: Lucide React, React Icons (Hi2, Lu, Si)
-- **Routing**: React Router DOM v6 (Code-split with `React.lazy`)
+### 🏡 Homestay Discovery
+- **Property Directory & Search:** Live regex-backed search and category filtering for homestays.
+- **Interactive Gallery:** Multi-photo mosaic view with preview lightboxes.
+- **Sticky Booking Card:** Dynamic stay pricing calculations based on selected guest counts and stay duration.
+- **Rich Details:** Categorized amenities (WiFi, Mountain View, Breakfast, Pool, Workspace), nearby attractions with distance estimates, guest review breakdowns, and recommended similar stays.
 
-### **Backend**
-- **API Engine**: FastAPI (Python 3.10+)
-- **Database**: MongoDB (Motor async driver)
-- **AI Integration**: Google Gemini 1.5 Flash API (`google-generativeai`)
-- **Authentication**: JWT (JSON Web Tokens) with Passlib & Bcrypt hashing
-- **Server**: Uvicorn ASGI Server
+### 🤖 AI Trip Planner
+- **Customized Inputs:** Specify destination name, trip duration (number of days), and total budget in INR.
+- **Gemini Integration:** Powered by Google's `gemini-2.5-flash` model to return structured day-by-day schedules, recommended activities (morning, afternoon, evening), and practical travel tips.
+- **Auto-Save & Manual Persistence:** Authenticated users can save generated itineraries directly to their account database with a single click.
+
+### 🔐 Authentication & Security
+- **Registration & Login:** Secure account creation and login endpoints (`/api/auth/register` and `/api/auth/login`).
+- **Password Hashing:** Passwords hashed using `bcrypt` before database storage.
+- **JWT Authorization:** Stateless authentication using JSON Web Tokens passed via HTTP `Authorization: Bearer <token>` headers.
+- **Protected Client Routes:** Frontend `ProtectedRoute` wrapper guarding private pages (`/dashboard`, `/profile`).
+
+### ❤️ Favorites
+- **Database Persistence:** Favorites stored in MongoDB (`favorites` collection) keyed by user email and homestay ID.
+- **Real-Time Context Sync:** Global React Context (`FavoritesContext`) updating UI state across cards and detail pages.
+
+### 📊 User Dashboard
+- **Personalized Greeting:** Dynamic time-based welcome message (Good Morning / Afternoon / Evening) displaying authenticated user email.
+- **Saved Favorites:** Dedicated section rendering saved homestay cards with quick removal actions.
+- **Recent AI Trips:** Fetch and display all persisted itineraries saved by the user, complete with detailed viewing modals and deletion controls.
+- **User Activity & Presentational Widgets:** Includes presentational stats cards (Saved Stays, AI Trips, Explored Stays), travel achievement badges, activity timeline, and recommended destinations.
+
+### 🔔 Notification UX
+- Toast notification feedback powered by `react-hot-toast` for login events, bookmark additions/removals, itinerary saves, deletion confirmations, and network errors.
+
+### 📱 Responsive UI
+- Styled with modern dark glassmorphism aesthetic, responsive Tailwind CSS grid layouts, mobile drawer menu navigation, and fluid Framer Motion enter/exit animations.
 
 ---
 
-## 📁 Folder Structure
+## 🖼️ Screenshots
+
+### 🏡 Homepage & Discovery
+| Hero & Search Bar | Homestay Listings Grid |
+| :---: | :---: |
+| ![Homepage Hero](frontend/screenshots/homepage1.png) | ![Homestay Listings](frontend/screenshots/homepage2.png) |
+
+### 🤖 AI Trip Planner & User Dashboard
+| AI Itinerary Generator | Personal Travel Workspace |
+| :---: | :---: |
+| ![AI Trip Planner](frontend/screenshots/ai-planner.png) | ![User Dashboard](frontend/screenshots/dashboard.png) |
+
+### 🏠 Homestay Details, Authentication & About
+| Homestay Details & Gallery | User Login |
+| :---: | :---: |
+| ![Homestay Details](frontend/screenshots/homestay-details.png) | ![User Login](frontend/screenshots/login.png) |
+
+| About StayEase AI |
+| :---: |
+| ![About Page](frontend/screenshots/about.png) |
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    subgraph Client Layer
+        A[User Browser] --> B[Vercel Host]
+        B --> C[React + Vite Frontend]
+    end
+
+    subgraph Backend Layer
+        C -- "HTTPS / REST API (JWT Header)" --> D[Render Host]
+        D --> E[FastAPI Backend]
+    end
+
+    subgraph Database & Services
+        E -- "PyMongo Driver" --> F[(MongoDB Atlas)]
+        E -- "Google Generative AI SDK" --> G[Google Gemini API]
+    end
+```
+
+---
+
+## 📁 Project Structure
 
 ```text
 StayEase-AI/
 ├── backend/
-│   ├── app/
-│   │   ├── main.py              # FastAPI app initialization & endpoints
-│   │   ├── database.py          # MongoDB connection & client configuration
-│   │   ├── auth.py              # JWT token generation & password hashing
-│   │   └── models.py            # Pydantic schemas & MongoDB models
-│   ├── requirements.txt         # Python dependencies
-│   └── .env.example             # Backend environment template
+│   ├── database.py              # MongoDB Atlas connection setup
+│   ├── main.py                  # FastAPI server routes & auth logic
+│   ├── models.py                # Pydantic schemas (User, Travel, Itinerary)
+│   ├── Procfile                 # Deployment process command for Render/Heroku
+│   ├── render.yaml              # Render deployment configuration
+│   └── requirements.txt         # Python dependencies
 ├── frontend/
-│   ├── public/                  # Static assets & favicon
+│   ├── public/                  # Static icons & favicons
+│   ├── screenshots/             # Application screenshots
 │   ├── src/
 │   │   ├── components/          # Reusable UI components
-│   │   │   ├── dashboard/       # Dashboard workspace sub-components
-│   │   │   ├── homestay/        # Homestay details page sub-components
-│   │   │   ├── ui/              # Skeleton placeholders & base UI elements
-│   │   │   ├── Navbar.jsx       # Header bar with mobile drawer menu
-│   │   │   ├── Footer.jsx       # 4-column footer layout
-│   │   │   ├── Card.jsx         # Homestay card component (Memoized)
-│   │   │   └── SearchFilterBar.jsx # Search & filter category bar
-│   │   ├── context/             # Global React Context (FavoritesContext)
-│   │   ├── pages/               # Top-level route pages (Home, About, Dashboard, AIPlanner, HomestayDetails)
-│   │   ├── App.jsx              # Application router & lazy page loading
-│   │   ├── index.css            # Tailwind & global CSS utilities
-│   │   └── main.jsx             # React DOM entry point
-│   ├── package.json             # NPM dependencies & build scripts
-│   └── vite.config.js           # Vite build configuration
+│   │   │   ├── dashboard/       # Dashboard widgets (Stats, Trips, Favorites)
+│   │   │   ├── homestay/        # Homestay details sub-components
+│   │   │   ├── ui/              # Skeletons and loading indicators
+│   │   │   ├── AIItineraryViewer.jsx
+│   │   │   ├── Card.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   ├── Hero.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   └── SearchFilterBar.jsx
+│   │   ├── config/
+│   │   │   └── api.js           # API base URL export
+│   │   ├── context/
+│   │   │   └── FavoritesContext.jsx
+│   │   ├── pages/               # Application routes (Home, AIPlanner, Dashboard, etc.)
+│   │   ├── App.jsx              # Main router & toast configuration
+│   │   ├── index.css            # Tailwind CSS directives & custom utility classes
+│   │   └── main.jsx             # React entry point
+│   ├── index.html
+│   ├── package.json
+│   ├── vercel.json              # Vercel SPA rewrite rule
+│   └── vite.config.js
+├── PROMPTS.md                   # Prompts used for AI generation
 └── README.md                    # Project documentation
 ```
 
 ---
 
-## 🚀 Installation & Local Setup
-
-### **Prerequisites**
-- Node.js (v18.0.0 or higher)
-- Python (v3.10 or higher)
-- MongoDB instance (Local or MongoDB Atlas cluster)
-- Google Gemini API Key
-
----
-
-### **1. Clone Repository**
-```bash
-git clone https://github.com/pulkit/StayEase-AI.git
-cd StayEase-AI
-```
-
----
-
-### **2. Backend Setup**
-```bash
-# Navigate to backend directory
-cd backend
-
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment (Windows)
-venv\Scripts\activate
-# Activate virtual environment (macOS/Linux)
-# source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Create .env file
-cp .env.example .env
-```
-
-#### **Backend `.env` Configuration**
-```env
-MONGODB_URL=mongodb://localhost:27017/stayease
-SECRET_KEY=your_super_secret_jwt_key_here
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=1440
-GEMINI_API_KEY=your_google_gemini_api_key_here
-```
-
-#### **Run Backend Server**
-```bash
-uvicorn app.main:app --reload --port 8000
-```
-Backend will run at: `http://127.0.0.1:8000`  
-Swagger API Docs available at: `http://127.0.0.1:8000/docs`
-
----
-
-### **3. Frontend Setup**
-```bash
-# Navigate to frontend directory (from project root)
-cd frontend
-
-# Install packages
-npm install
-
-# Start Vite development server
-npm run dev
-```
-Frontend will run at: `http://localhost:5173`
-
----
-
-## 🔌 API Overview
+## 🔌 API Endpoints
 
 | Method | Endpoint | Description | Auth Required |
-|:---|:---|:---|:---:|
-| `POST` | `/api/register` | Register new user account | ❌ |
-| `POST` | `/api/login` | Authenticate user & return JWT token | ❌ |
-| `GET` | `/api/profile` | Fetch authenticated user profile | ✅ |
-| `GET` | `/homestays` | List all available homestays with filter queries | ❌ |
-| `GET` | `/homestays/{id}` | Get detailed homestay information | ❌ |
-| `POST` | `/api/ai/itinerary` | Generate AI itinerary via Gemini API | ❌ |
-| `GET` | `/api/favorites` | Get user's saved homestay IDs | ✅ |
-| `POST` | `/api/favorites/{id}` | Save homestay to user favorites | ✅ |
-| `DELETE` | `/api/favorites/{id}`| Remove homestay from user favorites | ✅ |
+| :---: | :--- | :--- | :---: |
+| `GET` | `/` | Health check endpoint | ❌ No |
+| `GET` | `/homestays` | Retrieve list of all available homestays | ❌ No |
+| `GET` | `/homestays/{homestay_id}` | Retrieve details for a specific homestay by ID | ❌ No |
+| `POST` | `/homestays` | Add a new homestay entry | ❌ No |
+| `PUT` | `/homestays/{homestay_id}` | Update an existing homestay entry | ❌ No |
+| `DELETE` | `/homestays/{homestay_id}` | Delete a homestay entry | ❌ No |
+| `GET` | `/search?name={query}` | Search homestays by name using regex | ❌ No |
+| `POST` | `/api/auth/register` | Register a new user account | ❌ No |
+| `POST` | `/api/auth/login` | Authenticate user & return JWT token | ❌ No |
+| `GET` | `/api/profile` | Fetch authenticated user profile details | ✅ Yes |
+| `POST` | `/api/ai/itinerary` | Generate AI travel itinerary via Gemini API | ❌ No |
+| `GET` | `/api/favorites` | Retrieve user's favorite homestay IDs | ✅ Yes |
+| `POST` | `/api/favorites/{homestay_id}` | Add homestay ID to user's favorites | ✅ Yes |
+| `DELETE` | `/api/favorites/{homestay_id}` | Remove homestay ID from user's favorites | ✅ Yes |
+| `GET` | `/api/itineraries` | Retrieve all saved AI itineraries for user | ✅ Yes |
+| `POST` | `/api/itineraries` | Persist a generated AI itinerary to database | ✅ Yes |
+| `DELETE` | `/api/itineraries/{itinerary_id}` | Delete a saved AI itinerary | ✅ Yes |
+
+---
+
+## 💻 Local Development
+
+### Prerequisites
+- **Node.js** (v18+)
+- **Python** (v3.10+)
+- **MongoDB Atlas** database cluster (or local MongoDB server)
+- **Google Gemini API Key**
+
+---
+
+### Backend Setup
+
+1. Navigate to the `backend` directory:
+   ```cmd
+   cd backend
+   ```
+
+2. Create a Python virtual environment:
+   ```cmd
+   python -m venv venv
+   ```
+
+3. Activate the virtual environment:
+   - **Windows (Command Prompt / PowerShell):**
+     ```cmd
+     venv\Scripts\activate
+     ```
+   - **macOS / Linux:**
+     ```bash
+     source venv/bin/activate
+     ```
+
+4. Install backend dependencies:
+   ```cmd
+   pip install -r requirements.txt
+   ```
+
+5. Create a `.env` file in `backend/` using the environment variables listed below.
+
+6. Start the FastAPI server:
+   ```cmd
+   uvicorn main:app --reload --port 8000
+   ```
+   The API server will run at `http://127.0.0.1:8000`. Interactive OpenAPI documentation is available at `http://127.0.0.1:8000/docs`.
+
+---
+
+### Frontend Setup
+
+1. Open a new terminal and navigate to the `frontend` directory:
+   ```cmd
+   cd frontend
+   ```
+
+2. Install dependencies:
+   ```cmd
+   npm install
+   ```
+
+3. Create a `.env` file in `frontend/` using the environment variables listed below.
+
+4. Start the Vite development server:
+   ```cmd
+   npm run dev
+   ```
+   The frontend application will be available at `http://localhost:5173`.
+
+---
+
+## 🔐 Environment Variables
+
+### Backend `.env` (`backend/.env`)
+
+```env
+APP_NAME=StayEaseAI
+DEBUG=True
+MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/stayease?retryWrites=true&w=majority
+JWT_SECRET=your_jwt_secret_key_here
+GEMINI_API_KEY=your_google_gemini_api_key_here
+ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,https://stay-ease-ai.vercel.app
+PORT=8000
+```
+
+### Frontend `.env` (`frontend/.env`)
+
+```env
+VITE_API_URL=http://127.0.0.1:8000
+```
+
+> ⚠️ **Important:** Never commit actual `.env` files containing real database credentials, API keys, or JWT secrets to version control.
+
+---
+
+## 🚀 Deployment
+
+- **Frontend (Vercel):** Deployed as a static React single-page application. `frontend/vercel.json` includes fallback rewrites (`/(.*)` -> `/index.html`) to support client-side React Router navigation. `VITE_API_URL` environment variable points to the production Render backend URL.
+- **Backend (Render):** Deployed as a Web Service running Uvicorn ASGI server. Configured via `backend/render.yaml` and `backend/Procfile`.
+- **Database (MongoDB Atlas):** Hosted cloud MongoDB cluster storing users, favorites, homestays, and itineraries collections.
+- **AI Integration (Google Gemini API):** Interfaced using the `google-generativeai` SDK with `gemini-2.5-flash`.
+
+---
+
+## 🛡️ Security Practices
+
+- **Password Encryption:** User passwords hashed using `bcrypt` before persistence.
+- **Stateless Authorization:** Secure JWT access tokens signed with server secret key.
+- **Protected Client Routes:** React Router guarded by `ProtectedRoute` checking token availability.
+- **Protected Backend API Routes:** Endpoints verifying JWT headers via `verify_token` dependency before accessing MongoDB documents.
+- **Controlled CORS:** Middleware strictly handling request origins from permitted development and production hostnames.
 
 ---
 
 ## 🔮 Future Improvements
 
-- [ ] **Interactive Map Integration**: Mapbox / Leaflet map view for location exploration.
-- [ ] **Direct Payment Gateway**: Razorpay / Stripe integration for instant booking checkout.
-- [ ] **PDF Itinerary Export**: Export generated AI travel plans directly as downloadable PDF files.
-- [ ] **Multi-language Support**: i18n support for international travelers.
-- [ ] **Host Portal**: Management dashboard for property owners to list and manage homestays.
+- **Interactive Maps:** Integration with Leaflet/Mapbox for geographical property visualization.
+- **Booking & Payment Integration:** Payment gateway integration (Stripe / Razorpay) for direct reservation checkouts.
+- **Export Itineraries to PDF:** Ability to export generated travel itineraries into formatted PDF downloads.
+- **Password Reset & Email Verification:** Email notifications for account registration and password recovery.
+- **Host Dashboard:** Dedicated portal for property owners to list, edit, and manage homestays.
 
 ---
 
 ## 👨‍💻 Author
 
-Developed with ❤️ by **Pulkit** as a full-stack AI-driven web application project.
-
-- **GitHub**: [@pulkit](https://github.com)
-- **LinkedIn**: [Connect on LinkedIn](https://linkedin.com)
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+**Pulkit Rana**  
+GitHub Repository: [https://github.com/ghost0547/StayEase-AI](https://github.com/ghost0547/StayEase-AI)
